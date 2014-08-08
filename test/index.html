@@ -20,14 +20,25 @@
 		</style>
 	</head>
 	<body>
-		<div data-layout="anchor[right:100 bottom:100]" style="background-color:cyan;">
+		<div data-layout="anchor[right:100 bottom:100]">
+			<button onclick="wat();">Wat</button>
 			<!-- <video width="800" height="400" controls>
 				<source src="http://axel669.net/work/test/videos/flcl6.mp4" type="video/mp4">
 				Your browser does not support the video tag.
 			</video> -->
-			<iframe width="640" height="640" src="http://www.ibehavioraltraining.com/IBT/Default.aspx" />
 		</div>
 		<script>
+		function wat()
+		{
+			var elem=document.createElement("div");
+			elem.setAttribute("data-layout","anchor[right:100 bottom:100]");
+			var frame=document.createElement("iframe");
+			frame.width="80%";
+			frame.height="80%";
+			frame.src="http://ibehavioraltraining.com/IBT/Default.aspx";
+			elem.appendChild(frame);
+			document.body.appendChild(elem);
+		}
 		// document.querySelector("img").addEventListener('click',function(){
 		// 	alert(sprintf("%{0} %{1}",document.body.clientWidth,document.body.clientHeight));
 		// });
