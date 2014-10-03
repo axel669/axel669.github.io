@@ -21,8 +21,9 @@
 	</head>
 	<body>
 		<div style="position:absolute; left:-300px; top:0px; background-color:rgba(0,0,0,0.5); width:300px; height:100%; transform:matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);"></div>
+		<button>What</button>
 		<script>
-		window.addEventListener("click",function(){
+		document.querySelector("button").addEventListener("click",function(){
 			alert(0);
 			try{
 				Animator.start(document.querySelector("div"),"left",250,-300,0,'sine','px');
