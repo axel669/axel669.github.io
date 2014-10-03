@@ -656,6 +656,8 @@ function slice(array,start,size)
 	start=start||0;
 	size=size||(len-start);
 	if(size<=0) return [];
+	if(size>len-start)
+		size=len-start;
 	var end=start+size;
 	var index=start-1;
 	var r=new Array(size);
@@ -1119,7 +1121,10 @@ factotum.util={
 	valuef:valueFunction,
 	valueTest:valueTest,
 	plucker:pluckFunction,
-	identity:identityFunction
+	identity:identityFunction,
+	clamp:function(value,min,max){
+		return Math.min(max,Math.max(value,min));
+	}
 };
 
 each(factotum,function(f,name){
@@ -1180,7 +1185,14 @@ function promiseCallback(f,p)
 {
 	return function(value){
 		try{
-			p.resolve(f(value));
+			var r=f(value);
+			if(r && typeof(r.then)==='function')
+				r.then(
+					function(s){p.resolve(s);},
+					function(e){p.reject(e);}
+				);
+			else
+				p.resolve(r);
 		}
 		catch(error){
 			p.reject(error);
@@ -1525,10 +1537,14 @@ function compileTemplate(template,settings,data)
 			return s.replace(/\$1/g,"\\n");
 		}).
 		replace(/\$2/g,"\\n").replace(/\$1/g,"\n");
+	var argNames=settings.args||[];
+	var vars=[];
+	for(var x=0;x<argNames.length;++x)
+		vars.push(argNames[x]+"="+settings.dataName+"['"+argNames[x]+"'];");
 	code="function print(){var index=-1, len=arguments.length; while(++index<len){r.push(arguments[index]);}}\nvar echo=print, \
-puts=print, cout=print;\nvar r=[];\n"+code+"\nreturn r.join('');";
+puts=print, cout=print;\nvar r=[];\n"+vars.join("")+"\n"+code+"\nreturn r.join('');";
 	try{
-		var f=new Function(settings.dataName,code);
+		var f=new Function(concat([settings.dataName],argNames),code);
 	}
 	catch(e){
 		var depth=1;
@@ -1561,10 +1577,11 @@ function ajax(url,postData,async,callback)
 		var result={requestObject:request};
 		result.statusCode=request.status;
 		result.statusText=request.statusText;
+		result.text=request.responseText;
 		result.success=(request.status>=200 && request.status<300);
-		if(callback) setImmediate(bind(callback,null,request));
+		if(callback) setImmediate(bind(callback,null,result));
 		if(result.success)
-			p.resolve(request);
+			p.resolve(result);
 		else
 		{
 			var error=new Error(sprintf("Error code %{0} returned by server",result.statusCode));
@@ -1576,6 +1593,7 @@ function ajax(url,postData,async,callback)
 	var method=postData?"POST":"GET";
 	try{
 		request.open(method,url,async!==false);
+		request.setRequestHeader("Content-Type","application/json");
 		request.send(postData||null);
 	}
 	catch(err){
@@ -1584,6 +1602,11 @@ function ajax(url,postData,async,callback)
 	return p;
 }
 factotum.ajax=ajax;
+
+if(has_window)
+	factotum.util.getScriptTag=function(){
+		return last(document.querySelectorAll("script"));
+	};
 
 
 function instanceOf(obj,_class)
@@ -1621,9 +1644,6 @@ if(has_window)
 if(typeof(exports)!=='undefined')
 	exports=factotum;
 
-if(has_global)
-	__global__.F=factotum;
-if(has_window)
-	__window__.F=factotum;
+makeGlobal(factotum,"fac");
 
 })();

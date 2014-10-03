@@ -4,11 +4,11 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=800" />
 		<title>AxelJS</title>
-		<script src="CocoonJS.js"></script>
-		<script src="CocoonJS_App.js"></script>
-		<script src="CocoonJS_App_ForCocoonJS.js"></script>
 		<script src="script/factotum.js"></script>
-		<script src="script/architect.js" data-expose-frames="true"></script>
+		<script src="script/setimmediate.js"></script>
+		<script src="script/class.js"></script>
+		<script src="script/eventemitter.js"></script>
+		<script src="script/animator.js"></script>
 		<style>
 		body, html
 		{
@@ -20,20 +20,11 @@
 		</style>
 	</head>
 	<body>
-		<div data-layout="anchor[right:100 bottom:100]" style="background-color:cyan;">
-			<!-- <video width="800" height="400" controls>
-				<source src="http://axel669.net/work/test/videos/flcl6.mp4" type="video/mp4">
-				Your browser does not support the video tag.
-			</video> -->
-			<iframe width="640" height="640" src="http://www.ibehavioraltraining.com/IBT/Default.aspx" />
-		</div>
+		<div style="position:absolute; left:-300px; top:0px; background-color:rgba(0,0,0,0.5); width:300px; height:100%; transform:matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);"></div>
 		<script>
-		// document.querySelector("img").addEventListener('click',function(){
-		// 	alert(sprintf("%{0} %{1}",document.body.clientWidth,document.body.clientHeight));
-		// });
-		// var vid=document.querySelector("video");
-		// vid.width=document.body.clientWidth;
-		// vid.height=document.body.clientHeight;
+		window.addEventListener("click",function(){
+			Animator.start(document.querySelector("div"),"left",500,-300,0,null,'px');
+		},false);
 		</script>
 	</body>
 </html>
