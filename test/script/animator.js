@@ -1,5 +1,8 @@
 ;(function(window){
 	"use strict";
+	if(typeof(performance)==="undefined")
+		var performance=Date;
+	
 	function Animation(obj,style,base,range,duration,ease,postfix)
 	{
 		EventEmitter.call(this);
